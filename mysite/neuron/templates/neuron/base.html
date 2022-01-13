@@ -1,0 +1,133 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+{% block mainmenu %}
+    <head>
+
+    		<div class="header">
+			<ul id="mainmenu" class="mainmenu">
+			<li><a href="{% url 'home' %}"><img src="{% static 'neuron/images/logo.png' %}" width="40" height="90"></a></li>
+{% for m in menu %}
+			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+{% endfor %}
+				{% if request.user.is_authenticated %}
+				<li class="last">{{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
+				{% else %}
+				<li class="last"><a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a></li>
+				{% endif %}
+			</ul>
+			<div class="clear"></div>
+		</div>
+{% endblock mainmenu %}
+
+    <!--- Basic Page Needs  -->
+
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+    <title>{{title}}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Mobile Specific Meta  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'neuron/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'neuron/css/responsive.css' %}">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'neuron/img/favicon.ico' %}">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+    <!-- prealoader area start -->
+    <div id="preloader">
+        <div class="spiner"></div>
+    </div>
+    <!-- prealoader area end -->
+    <!-- Crumbs area start -->
+    <div class="crumbs-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+                    <div class="crumbs-header">
+                        <h2 class="cd-headline letters rotate-3">
+                            <span class="cd-words-wrapper">
+                                <b class="is-visible">Долгов Чмо</b>
+                                <b>Долгов Педик</b>
+                            </span>
+                        </h2>
+                        <p>Используйте нейронную сеть для прогнозирования акций</p>
+                        <div class="btn-area">
+                            <a href="#">Purchase Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Crumbs area end -->
+    <!-- counter-box area start -->
+    <div class="counter-box">
+        <div class="container">
+            <div class="row">
+                <div class="counter-box-container">
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">10</b>
+                            <span>total page</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">6</b>
+                            <span>home page</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">4</b>
+                            <span>blog page</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% block content %}
+{% endblock %}
+
+
+    <!-- footer area start -->
+    <footer>
+        <div class="footer-area">
+            <div class="container">
+                <div class="footer-content text-center">
+                    <p class="copy-right"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer area end -->
+
+    <!-- Scripts -->
+    <script src="{% static 'neuron/js/jquery-3.2.0.min.js' %}"></script>
+    <script src="{% static 'neuron/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'neuron/js/animatedheadline.js' %}"></script>
+    <script src="{% static 'neuron/js/counterup.js' %}"></script>
+    <script src="{% static 'neuron/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'neuron/js/theme.js' %}"></script>
+
+
+</body>
+
+</html>
