@@ -1,6 +1,10 @@
+from pyexpat.errors import messages
+
 from django.contrib.auth import logout, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -27,13 +31,14 @@ class HomePage(DataMixin, ListView):
 
 
 class RegisterUser(DataMixin, CreateView):
-    form_class = RegisterUserForm
+    form_class = CustomUserCreationForm
     template_name = 'neuron/register.html'
     success_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Регистрация')
+
         return context | c_def
 
     def form_valid(self, form):
@@ -53,6 +58,27 @@ class LoginUser(DataMixin, LoginView):
 
     def get_success_url(self):
         return reverse_lazy('home')
+
+# @login_required
+# @transaction.atomic
+# def update_profile(request):
+#     if request.method == 'POST':
+#         user_form = RegisterUserForm(request.POST, instance=request.user)
+#         profile_form = ProfileUserForm(request.POST, instance=request.user.profile)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, _('Ваш профиль был успешно обновлен!'))
+#             return redirect('settings:profile')
+#         else:
+#             messages.error(request, _('Пожалуйста, исправьте ошибки.'))
+#     else:
+#         user_form = RegisterUserForm(instance=request.user)
+#         profile_form = ProfileUserForm(instance=request.user.profile)
+#     return render(request, 'neuron/register.html', {
+#         'user_form': user_form,
+#         'profile_form': profile_form
+#     })
 
 
 def logout_user(request):
