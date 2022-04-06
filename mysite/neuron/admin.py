@@ -18,5 +18,20 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+class NeuralNetworkAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
 
+
+class ListСompaniesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ticker')
+
+
+class TrainedNeuralNetworkAdmin(admin.ModelAdmin):
+    list_display = ('creator', 'loss', 'optimizer', 'epochs', 'batch_size', 'file_trained_nn', 'time_create',
+                    'neural_network_architecture')
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(NeuralNetwork, NeuralNetworkAdmin)
+admin.site.register(ListСompanies, ListСompaniesAdmin)
+admin.site.register(TrainedNeuralNetwork, TrainedNeuralNetworkAdmin)

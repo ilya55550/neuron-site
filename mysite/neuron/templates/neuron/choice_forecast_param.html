@@ -1,0 +1,48 @@
+{% extends 'neuron/base.html' %}
+
+{% block title %}
+    <title>Выбор параметров прогнозирования</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Выберите TimeFrame</h1>
+    <form id="data" action="{% url 'choice_forecast_param' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit">Сделать прогноз</button>
+    </form>
+
+
+
+<h1>Выберите обученную модель нейронной сети</h1>
+    <div class="demo-area">
+        <div class="container">
+            <div class="row">
+                {% for n in TrainedNeuralNetwork %}
+                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                    <div class="demo-item">
+                        {% if n.neural_network_architecture.image %}
+                            <div class="thumb-area">
+                                <a href="#" target="_blank"><img src="{{n.neural_network_architecture.image.url}}" alt="demo image"></a>
+                                <a href="#" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
+                            </div>
+                        {% endif %}
+                        <div class="demo-title">
+                            <h2>creator - {{n.creator}}</h2>
+                            <h2>loss - {{n.loss}}</h2>
+                            <h2>optimizer - {{n.optimizer}}<br></h2>
+                            <h2>epochs - {{n.epochs}}</h2>
+                            <h2>batch_size - {{n.batch_size}}</h2>
+                            <h2>time_create - {{n.time_create}}</h2>
+                            <h2>architecture - {{n.neural_network_architecture}}</h2>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

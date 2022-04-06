@@ -39,6 +39,59 @@
 
 /*preloader area start*/
 
+
+.checkbox-style{
+margin: 0px 0px 0px 0px;
+
+}
+
+.main {
+  min-height: calc(100vh - 80px);
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    display: inline-block;
+    border: none;
+    color: #000000;
+    font-size: 18px;
+    background: #f1f1f1;
+}
+
+.body-for-reg{
+    background: url(../img/bg/slider-bg.jpg) center center/cover no-repeat;
+    height: 600px;
+}
+
+.text-reg{
+    color: #fdc073;
+    font-size: 20px;
+    text-align: center;
+}
+
+.reg-button{
+    margin: 15px 0;
+    color: #242222;
+}
+
+.container-reg{
+    background-color: #3F4137;
+    margin: 1px 400px;
+    padding: 13px;
+    font-family: Arial;
+    box-shadow: 4px 3px 6px 3px #888;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 140%;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #333366;
+    text-align: center;
+}
+
 div#preloader {
     background: #372940;
     height: 100%;
@@ -56,7 +109,42 @@ div#preloader {
 
 }
 
+img {max-width: 600px; height: auto;}
 
+.flex-graphic{
+    display: flex;
+}
+
+.vertical-menu {
+
+    width: 200px;
+    height: 500px;
+    overflow-y: auto;
+}
+
+.vertical-menu a {
+    display: flex;
+    background-color: #eee;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+
+.vertical-menu a:hover {
+    background-color: #ccc;
+}
+
+.vertical-menu a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.res_graphic{
+    padding-right: 10px;
+    height:100%;
+    width:100%;
+}
 
 #about{
     background-color: #e9e7ff;
@@ -87,14 +175,19 @@ p.link-read-post a {
 	text-decoration: none;
 }
 .form-label {
+    margin: 3px 0px;
     display: inline-block;
     min-width: 150px;
+    color: #fdc073;
     vertical-align: top;
+    font-weight: bold;
+    font-size: 15px;
 }
 .form-error ul {
     list-style: none;
     padding: 0;
-    color: #CC0000;
+    color: #ff0000;
+
 }
 
 
@@ -299,6 +392,7 @@ ul.mainmenu li a:hover {
  .demo-title{
     min-height: 80px;
     display: flex;
+    flex-direction: column;
     background: #f3f3f3;
  }
  .thumb-area a.lets-view {
@@ -323,7 +417,7 @@ ul.mainmenu li a:hover {
  }
  .demo-title h2{
     font-size: 14px;
-    text-transform: uppercase;
+
     letter-spacing: 0;
     margin: auto;
     color: #f16266;
@@ -339,8 +433,8 @@ ul.mainmenu li a:hover {
  *=============================================*/
 
  .footer-area {
-    background: #f9f9f9;
-    padding: 70px 0px;
+    background: #3F4137;
+    padding: 10px 0px;
 }
 
 .footer-area img {
@@ -360,7 +454,7 @@ ul.mainmenu li a:hover {
 }
 
 .copy-right {
-    color: #f26367;
+    color: #fdc073;
     letter-spacing: 0.05em;
     font-size: 17px;
 }

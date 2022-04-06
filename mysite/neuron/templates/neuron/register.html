@@ -1,20 +1,29 @@
 {% extends 'neuron/base.html' %}
 
 {% block content %}
-<div id="about">
-<h1>{{title}}</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {% for f in form %}
-    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{f}}</p>
-    <div class="form-error">{{f.errors}}</div>
-    {% endfor %}
+<div class="body-for-reg">
+    <div class="container-reg">
+        <div class="text-reg">{{title}}</div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for f in form %}
+            {% if f.label == 'Исследователь' %}
+            <div class="checkbox-flex">
+                <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{f}}</p>
+            </div>
+            {% else %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label><br>{{f}}</p>
+            {% endif %}
+            <div class="form-error">{{f.errors}}</div>
+            {% endfor %}
 
 
+            <button class="reg-button" type="submit">Регистрация</button>
+        </form>
+    </div>
 
-    <button type="submit">Регистрация</button>
-</form>
 </div>
-
 {% endblock %}

@@ -1,122 +1,98 @@
 {% extends 'neuron/base.html' %}
+{% load static %}
 
+{% block index %}
+
+
+<body>
+
+    <!-- prealoader area start -->
+    <div id="preloader">
+        <div class="spiner"></div>
+    </div>
+    <!-- prealoader area end -->
+    <!-- Crumbs area start -->
+    <div class="crumbs-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12">
+                    <div class="crumbs-header">
+                        <h2 class="cd-headline letters rotate-3">
+                            <span class="cd-words-wrapper">
+                                {% for n in networks %}
+                                    {% if forloop.first %}
+                                    <b class="is-visible">{{n.name}}</b>
+                                    {% else %}
+                                <b>{{n.name}}</b>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </h2>
+                        <p>Используйте нейронную сеть для прогнозирования акций</p>
+                        <div class="btn-area">
+                            <a href="{% url 'choice_forecast_param' %}">Поехали</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crumbs area end -->
+    <!-- counter-box area start -->
+    <div class="counter-box">
+        <div class="container">
+            <div class="row">
+                <div class="counter-box-container">
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">{{networks.count}}</b>
+                            <span>Архитектуры нейронных сетей</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">{{count_trained_nn}}</b>
+                            <span>Обученных нейронных сетей</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                        <div class="counter-item">
+                            <b class="counter-up">{{count_user}}</b>
+                            <span>Пользователей</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
 
 {% block content %}
     <!-- counter-box area end -->
     <!-- demo area start -->
+
+<h1>Представленные архитектуры нейронных сетей</h1>
+
+
     <div class="demo-area">
         <div class="container">
             <div class="row">
+                {% for n in network %}
                 <div class="col-md-4 col-sm-4 col-xs-12 col-2">
                     <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index.html" target="_blank"><img src="img/demo-thumb/index.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
+                        {% if n.image %}
+                            <div class="thumb-area">
+                                <a href="{{ n.get_absolute_url }}" target="_blank"><img src="{{n.image.url}}" alt="demo image"></a>
+                                <a href="{{ n.get_absolute_url }}" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
+                            </div>
+                        {% endif %}
                         <div class="demo-title">
-                            <h2>Home One / background Slider</h2>
+                            <h2>{{n.name}}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index2.html" target="_blank"><img src="img/demo-thumb/index2.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index2.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>Home Two / Paralax Slider</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index3.html" target="_blank"><img src="img/demo-thumb/index3.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index3.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>Home Three / Gradiant Paralax</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index4.html" target="_blank"><img src="img/demo-thumb/index4.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index4.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>Home Four / Gradiant Color</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index5.html" target="_blank"><img src="img/demo-thumb/index5.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index5.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>Home Five / Gradiant Warm Canvas</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/index6.html" target="_blank"><img src="img/demo-thumb/index6.jpg" alt="demo image"></a>
-                            <a href="zeedapp/index6.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>Home Six / background video</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/blog.html" target="_blank"><img src="img/demo-thumb/blog.jpg" alt="demo image"></a>
-                            <a href="zeedapp/blog.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>blog standard</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/blog-with-sidebar.html" target="_blank"><img src="img/demo-thumb/blog-with-sidebar.jpg" alt="demo image"></a>
-                            <a href="zeedapp/blog-with-sidebar.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>blog with sidebar</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/blog-left-sidebar.html" target="_blank"><img src="img/demo-thumb/blog-left-sidebar.jpg" alt="demo image"></a>
-                            <a href="zeedapp/blog-left-sidebar.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>blog left sidebar</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
-                    <div class="demo-item">
-                        <div class="thumb-area">
-                            <a href="zeedapp/blog-details.html" target="_blank"><img src="img/demo-thumb/blog-details.jpg" alt="demo image"></a>
-                            <a href="zeedapp/blog-details.html" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="demo-title">
-                            <h2>blog details</h2>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -1,0 +1,27 @@
+{% extends 'neuron/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="flex-graphic">
+
+{% block comment %}
+    <div class="vertical-menu">
+        {% for company in companies %}
+        <a href="#">{{company.ticker}}</a>
+        {% endfor %}
+    </div>
+{% endblock comment %}
+
+
+    <div style="display: none" id="jsonData" data-json="{{ data_for_graphic }}"></div>
+    <div style="display: none" id="selected_company" data-json="{{ selected_company }}"></div>
+
+
+    <div class="res_graphic">
+        <canvas id="myChart"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="{% static 'neuron/js/graphic.js' %}"></script>
+    </div>
+</div>
+{% endblock %}

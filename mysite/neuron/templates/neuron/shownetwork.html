@@ -1,0 +1,14 @@
+{% extends 'neuron/base.html' %}
+
+
+{% block content %}
+<div id="about">
+<h1>{{network.name}}</h1>
+
+{% if network.image %}
+<p><img class="img" src="{{network.image.url}}"></p>
+{% endif %}
+
+{{network.description|linebreaks}}
+</div>
+{% endblock %}
