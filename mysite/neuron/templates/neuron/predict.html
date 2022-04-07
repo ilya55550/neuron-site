@@ -14,12 +14,17 @@
 {% endblock comment %}
 
 
-    <div style="display: none" id="jsonData" data-json="{{ data_for_graphic }}"></div>
+
+    <div style="display: none" id="data_for_graphic_with_predict" data-json="{{ data_for_graphic_with_predict }}"></div>
     <div style="display: none" id="selected_company" data-json="{{ selected_company }}"></div>
+    <div style="display: none" id="jsonData" data-json="{{ data_for_graphic }}"></div>
 
 
     <div class="res_graphic">
         <canvas id="myChart"></canvas>
+        <canvas id="myChart2"></canvas>
+        <canvas id="myChart3"></canvas>
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script src="{% static 'neuron/js/graphic.js' %}"></script>
     </div>

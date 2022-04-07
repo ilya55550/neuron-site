@@ -1,4 +1,6 @@
 import json
+# import .neural_network.LSTM2 as lstm
+from .neural_network import LSTM2
 from pyexpat.errors import messages
 
 from django.contrib.auth import logout, login
@@ -124,11 +126,26 @@ class Predict(DataMixin, View):
     def get_context_data(self, *, request, object_list=None, **kwargs):
         context = {}
         c_def = self.get_user_context(title='Predict')
+        """Достаём данные из сессии"""
         selected_company_ticker = request.session.get('selected_company_ticker')
         selected_time_frame = request.session.get('selected_time_frame')
         # selected_trained_nn_id = request.session.get['trained_nn_id']
+        """Обращаемся к апи"""
         data_for_graphic = data_API(selected_time_frame, selected_company_ticker)
-        context['selected_company'] = json.dumps([request.session.get('selected_company_name'), json.dumps(selected_company_ticker)])
+        """Формируем набор данных для нейронки"""
+        date = list(reversed(data_for_graphic.keys()))
+        value = list(reversed(data_for_graphic.values()))
+        """Формируем контекс для отправки в js"""
+
+        # res_date, res_volume, predict_date, predict_value = LSTM2.predict(value, date)
+        # context['res_date'] = json.dumps(res_date)
+        # context['res_volume'] = json.dumps(res_volume)
+        # context['predict_date'] = json.dumps(predict_date)
+        # context['predict_value'] = json.dumps(predict_value)
+
+        context['data_for_graphic_with_predict'] = json.dumps(LSTM2.predict(value, date))
+        context['selected_company'] = json.dumps([request.session.get('selected_company_name'),
+                                                  json.dumps(selected_company_ticker)])
         context['data_for_graphic'] = json.dumps(
             [
 
