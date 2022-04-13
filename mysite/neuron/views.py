@@ -1,6 +1,6 @@
 import json
 # import .neural_network.LSTM2 as lstm
-from .neural_network import LSTM2
+from .neural_network import LSTM2, LSTM3
 from pyexpat.errors import messages
 
 from django.contrib.auth import logout, login
@@ -143,7 +143,9 @@ class Predict(DataMixin, View):
         # context['predict_date'] = json.dumps(predict_date)
         # context['predict_value'] = json.dumps(predict_value)
 
-        context['data_for_graphic_with_predict'] = json.dumps(LSTM2.predict(value, date))
+        # context['data_for_graphic_with_predict'] = json.dumps(LSTM2.predict(value, date))
+        context['data_for_graphic_with_predict'] = json.dumps(LSTM3.predict(value, date))
+
         context['selected_company'] = json.dumps([request.session.get('selected_company_name'),
                                                   json.dumps(selected_company_ticker)])
         context['data_for_graphic'] = json.dumps(

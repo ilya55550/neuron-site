@@ -69,7 +69,7 @@ window.onload = function () {
         labels: data_for_graphic_with_predict[2],
         datasets: [
             {
-              label: `График кампании: ${selected_company[0]}, тикер: ${selected_company[1]}`,
+              label: `Прогноз кампании: ${selected_company[0]}, тикер: ${selected_company[1]}`,
 //              backgroundColor: 'black',
               borderColor: 'lightblue',
               pointRadius: 0,

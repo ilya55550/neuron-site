@@ -24,45 +24,28 @@ def create_dataset(dataset, time_step=1):
 
 def predict(dataset, date):
     date = np.array(date)
-    dataset = np.array(dataset)
+    # dataset = np.array(dataset)
     # print(dataset[:10])
 
     date = date.reshape(-1, 1)
-    dataset = dataset.reshape(-1, 1)
+    # dataset = dataset.reshape(-1, 1)
     # print(dataset[:10])
 
-    # num_shape = 1900
-    size_dataset = len(dataset)
-    size_half_dataset = size_dataset // 2
-    # size_half_dataset = len(dataset) - 1
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    dataset = scaler.fit_transform(np.array(dataset).reshape(-1, 1))
 
-    # num_shape = size_dataset / 2
+    train_size = int(len(dataset) * 0.65)
+    test_size = len(dataset) - train_size
+    train_data, test_data = dataset[:train_size], dataset[train_size:]
 
-    train = dataset[:size_half_dataset]
-    test = dataset[size_half_dataset:]
+    time_step = 100
+    X_train, y_train = create_dataset(train_data, time_step)
+    X_test, ytest = create_dataset(test_data, time_step)
 
-    # train_date = date[:size_half_dataset]
-    # test_date = date[size_half_dataset:]
+    X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
+    X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
 
-    sc = MinMaxScaler(feature_range=(0, 1))
-    # print(f'sc: {sc}')
-
-    train_scaled = sc.fit_transform(train)
-    # print(f'train_scaled: {train_scaled}')
-
-    X_train = []
-
-    # Price on next day
-    y_train = []
-
-    window = 60
-
-    for i in range(window, size_half_dataset):
-        X_train_ = np.reshape(train_scaled[i - window:i, 0], (window, 1))
-        X_train.append(X_train_)
-        y_train.append(train_scaled[i, 0])
-    X_train = np.stack(X_train)
-    y_train = np.stack(y_train)
+    # print('X_test.shape[1]: {X_test.shape[1]}')
 
     if os.path.exists('LSTM_with100.h5'):
         model = load_model('LSTM_with100.h5')
@@ -72,30 +55,24 @@ def predict(dataset, date):
         # Adding the first LSTM layer with a sigmoid activation function and some Dropout regularization
         # Units - dimensionality of the output space
 
-        model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], 1)))
-        model.add(Dropout(0.2))
+        model.add(LSTM(units=50, return_sequences=True, input_shape=(time_step, 1)))
 
         model.add(LSTM(units=50, return_sequences=True))
-        model.add(Dropout(0.2))
-
-        model.add(LSTM(units=50, return_sequences=True))
-        model.add(Dropout(0.2))
 
         model.add(LSTM(units=50))
-        model.add(Dropout(0.2))
 
         # Adding the output layer
         model.add(Dense(units=1))
 
         model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
-        history = model.fit(X_train, y_train, epochs=500, batch_size=32)
+        history = model.fit(X_train, y_train, validation_data=(X_test, ytest), epochs=100, batch_size=64)
 
         # Сохранение обученной модели
         model.save('LSTM_with100.h5')
 
     # time_step = 100
 
-    x_input = test[-window:].reshape(1, -1)
+    x_input = test_data[-time_step:].reshape(1, -1)
     # print(f'x_input: {x_input}')
 
     temp_input = list(x_input)
@@ -109,17 +86,17 @@ def predict(dataset, date):
 
     list_output = []
     i = 0
-    number_forecast_days = 1
+    number_forecast_days = 30
 
     while (i < number_forecast_days):
         # print(f'iter: {i}')
         # print(f'temp_input: {temp_input}')
         # print(f'lentemp_input: {len(temp_input)}')
 
-        x_input = np.array(temp_input[-window:])
+        x_input = np.array(temp_input[-time_step:])
         print(f'x_input: {x_input}')
         x_input = x_input.reshape(1, -1)
-        x_input = x_input.reshape((1, window, 1))
+        x_input = x_input.reshape((1, time_step, 1))
         # print(f'x_input: {x_input}')
         # print(f'lenx_input: {len(x_input)}')
 
@@ -133,7 +110,7 @@ def predict(dataset, date):
     # print(f'lenlist_output: {len(list_output)}')
 
     print(f'После: {list_output}')
-    list_output = sc.inverse_transform(list_output).tolist()
+    list_output = scaler.inverse_transform(list_output).tolist()
     print(f'До: {list_output}')
 
     # print(list_output)
@@ -153,8 +130,8 @@ def predict(dataset, date):
     # print(predict_date)
     # print(list_output)
 
-    res_date = date[-window:]
-    res_volume = dataset[-window:]
+    res_date = date[-time_step:]
+    res_volume = dataset[-time_step:]
     predict_value = list(map(str, list_output))
 
     res_date = list(res_date)
