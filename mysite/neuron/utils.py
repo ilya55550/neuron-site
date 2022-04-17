@@ -6,14 +6,19 @@ from django.core.cache import cache
 from .models import *
 
 
-def data_API(function, symbol):
+def data_API(symbol, function='Daily'):
     """https://www.alphavantage.co/"""
+    dict_function = {'Daily': 'Time Series (Daily)',
+                     'Weekly': 'Weekly Time Series',
+                     'Monthly': 'Monthly Time Series'
+                     }
+
     function_for_url = 'TIME_SERIES_' + str(function).upper()
     url = f"https://www.alphavantage.co/query?function={function_for_url}&outputsize=full&symbol={symbol}" \
           f"&apikey={config('API_KEY')}"
     r = requests.get(url)
     data = r.json()
-    function_for_dict = 'Time Series ' + f'({function})'
+    function_for_dict = dict_function[function]
     data = {k: v['4. close'] for k, v in data[function_for_dict].items()}
     return data
 
@@ -29,6 +34,7 @@ class DataMixin:
 
     def get_user_context(self, **kwargs):
         context = kwargs
+
         network = cache.get('network')  # кэширование
         if not network:
             # first_name_networks = NeuralNetwork.objects.get(pk=1)

@@ -1,0 +1,24 @@
+{% extends 'neuron/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="flex-graphic">
+
+
+    <div style="display: none" id="data_for_graphic_with_predict" data-json="{{ data_for_graphic_with_predict }}"></div>
+    <div style="display: none" id="selected_company" data-json="{{ selected_company }}"></div>
+
+
+
+    <div class="res_graphic">
+        <canvas id="myChart"></canvas>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="{% static 'neuron/js/graphic_past_predict.js' %}"></script>
+    </div>
+</div>
+
+{% endblock %}

@@ -27,8 +27,9 @@ class ListСompaniesAdmin(admin.ModelAdmin):
 
 
 class TrainedNeuralNetworkAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'loss', 'optimizer', 'epochs', 'batch_size', 'file_trained_nn', 'time_create',
-                    'neural_network_architecture')
+    list_display = (
+        'creator', 'time_step', 'loss', 'optimizer', 'epochs', 'batch_size', 'file_trained_nn', 'time_create',
+        'neural_network_architecture')
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

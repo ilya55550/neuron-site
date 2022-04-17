@@ -1,6 +1,6 @@
 import json
 # import .neural_network.LSTM2 as lstm
-from .neural_network import LSTM2, LSTM3
+from .neural_network import LSTM2, LSTM3, for_trainable_models
 from pyexpat.errors import messages
 
 from django.contrib.auth import logout, login
@@ -125,16 +125,24 @@ class Predict(DataMixin, View):
 
     def get_context_data(self, *, request, object_list=None, **kwargs):
         context = {}
-        c_def = self.get_user_context(title='Predict')
+        c_def = self.get_user_context(title='Прогноз')
         """Достаём данные из сессии"""
         selected_company_ticker = request.session.get('selected_company_ticker')
-        selected_time_frame = request.session.get('selected_time_frame')
-        # selected_trained_nn_id = request.session.get['trained_nn_id']
+        predict_daily = request.session.get('predict_daily')
+
+        # selected_time_frame = request.session.get('selected_time_frame')
+        selected_trained_nn_path = request.session.get('selected_trained_nn_path')
+        selected_trained_nn_time_step = request.session.get('selected_trained_nn_time_step')
+
+        # print(f'selected_trained_nn_path: {selected_trained_nn_path}')
         """Обращаемся к апи"""
-        data_for_graphic = data_API(selected_time_frame, selected_company_ticker)
+        data_for_graphic = data_API(selected_company_ticker)
         """Формируем набор данных для нейронки"""
         date = list(reversed(data_for_graphic.keys()))
         value = list(reversed(data_for_graphic.values()))
+        """Запись в сессию"""
+        request.session['date'] = date
+        request.session['value'] = value
         """Формируем контекс для отправки в js"""
 
         # res_date, res_volume, predict_date, predict_value = LSTM2.predict(value, date)
@@ -144,7 +152,9 @@ class Predict(DataMixin, View):
         # context['predict_value'] = json.dumps(predict_value)
 
         # context['data_for_graphic_with_predict'] = json.dumps(LSTM2.predict(value, date))
-        context['data_for_graphic_with_predict'] = json.dumps(LSTM3.predict(value, date))
+        context['data_for_graphic_with_predict'] = json.dumps(
+            for_trainable_models.predict(value, date, predict_daily, selected_trained_nn_path,
+                                         selected_trained_nn_time_step))
 
         context['selected_company'] = json.dumps([request.session.get('selected_company_name'),
                                                   json.dumps(selected_company_ticker)])
@@ -201,9 +211,40 @@ class ChoiceForecastParam(DataMixin, View):
         if bound_form.is_valid():
             request.session['selected_company_name'] = bound_form.cleaned_data['company'].name
             request.session['selected_company_ticker'] = bound_form.cleaned_data['company'].ticker
-            request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
-            request.session['selected_trained_nn_id'] = bound_form.cleaned_data['trained_nn_id'].id
+            # request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
+            request.session['predict_daily'] = bound_form.cleaned_data['predict_daily']
+
+            request.session['selected_trained_nn_path'] = str(bound_form.cleaned_data['trained_nn_id'].file_trained_nn)
+            request.session['selected_trained_nn_time_step'] = bound_form.cleaned_data['trained_nn_id'].time_step
+
             return redirect('predict')
 
         return render(request, 'neuron/choice_forecast_param.html',
                       context=self.get_context_data() | {'form': bound_form})
+
+
+class PredictPastData(DataMixin, View):
+    def get_context_data(self, *, request, object_list=None, **kwargs):
+        context = {}
+        c_def = self.get_user_context(title='Прогноз прошлых значений')
+        """Достаём данные из сессии"""
+        date = request.session.get('date')
+        value = request.session.get('value')
+        predict_daily = request.session.get('predict_daily')
+        selected_trained_nn_path = request.session.get('selected_trained_nn_path')
+        selected_trained_nn_time_step = request.session.get('selected_trained_nn_time_step')
+        selected_company_name = request.session.get('selected_company_name')
+        selected_company_ticker = request.session.get('selected_company_ticker')
+
+        """Формируем контекс для отправки в js"""
+
+        context['data_for_graphic_with_predict'] = json.dumps(
+            for_trainable_models.predict_past_data(value, date, predict_daily, selected_trained_nn_path,
+                                                   selected_trained_nn_time_step))
+
+        context['selected_company'] = json.dumps([selected_company_name, selected_company_ticker])
+
+        return context | c_def
+
+    def get(self, request):
+        return render(request, 'neuron/predict_past_data.html', context=self.get_context_data(request=request))

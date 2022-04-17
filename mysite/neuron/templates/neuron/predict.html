@@ -5,14 +5,13 @@
 
 <div class="flex-graphic">
 
-{% block comment %}
+    {% block comment %}
     <div class="vertical-menu">
         {% for company in companies %}
         <a href="#">{{company.ticker}}</a>
         {% endfor %}
     </div>
-{% endblock comment %}
-
+    {% endblock comment %}
 
 
     <div style="display: none" id="data_for_graphic_with_predict" data-json="{{ data_for_graphic_with_predict }}"></div>
@@ -28,5 +27,9 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
         <script src="{% static 'neuron/js/graphic.js' %}"></script>
     </div>
+</div>
+<h1>Вы можете проверить выбранную модель нейронной сети на прошлых данных</h1>
+<div class="btn-area">
+    <a href="{% url 'predict_past_data' %}">Прогноз</a>
 </div>
 {% endblock %}

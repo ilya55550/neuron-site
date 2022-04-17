@@ -52,7 +52,7 @@ class LoginUserForm(AuthenticationForm):
         model = CustomUser
         fields = ('username', 'password')
 
-    def clean_title(self):
+    def clean_username(self):
         username = self.cleaned_data['username']
         if re.match(r'\d', username):
             raise ValidationError('Название не должно начинаться с цифры')
@@ -67,10 +67,17 @@ class ContactForm(forms.Form):
 
 
 class ChoiceParam(forms.Form):
-    company = forms.ModelChoiceField(queryset=ListСompanies.objects.all())
-    time_frame = forms.ChoiceField(label='Layout',
-                                   choices=(('Daily', 'Daily'),
-                                            ('Weekly', 'Weekly'),
-                                            ('Monthly', 'Monthly'),
-                                            ))
-    trained_nn_id = forms.ModelChoiceField(queryset=TrainedNeuralNetwork.objects.all())
+    company = forms.ModelChoiceField(label='Тикер компании', queryset=ListСompanies.objects.all())
+    # time_frame = forms.ChoiceField(label='Time_Frame',
+    #                                choices=(('Daily', 'Daily'),
+    #                                         ('Weekly', 'Weekly'),
+    #                                         ('Monthly', 'Monthly'),
+    #                                         ))
+    trained_nn_id = forms.ModelChoiceField(label='Модель нейронной сети', queryset=TrainedNeuralNetwork.objects.all())
+    predict_daily = forms.IntegerField(label='Количество дней прогноза')
+
+    def clean_predict_daily(self):
+        predict_daily = self.cleaned_data['predict_daily']
+        if predict_daily > 365 or predict_daily < 2:
+            raise ValidationError('Возможный диапазон прогноза 2-365 дней')
+        return predict_daily

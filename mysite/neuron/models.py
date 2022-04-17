@@ -29,6 +29,7 @@ class NeuralNetwork(models.Model):
 
 class TrainedNeuralNetwork(models.Model):
     creator = models.CharField(max_length=100)
+    time_step = models.IntegerField(null=True)
     loss = models.CharField(max_length=100)
     optimizer = models.CharField(max_length=100)
     epochs = models.IntegerField()
