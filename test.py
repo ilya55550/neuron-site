@@ -1,12 +1,17 @@
-def generate_number():
-    i = 0
-    a = [i + 1 for i in range(1000)]
-    return a
+import random
+from datetime import datetime
+
+# model.save('LSTM_with100.h5')  # <FieldFile: save_model_nn/2022/04/03/СNN_model_kyjBosa.h5>
 
 
-data = generate_number()
-temp = data[-100:]
+# def generate_name():
+#     return str(random.randint(1, 100000000)) + '.h5'
 
-print(data)
-print(temp[-1])
-print(len(temp))
+
+
+# print(generate_name())
+current_datetime = datetime.now()
+print(current_datetime)
+
+
+print(path)

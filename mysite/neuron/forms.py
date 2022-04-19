@@ -81,3 +81,11 @@ class ChoiceParam(forms.Form):
         if predict_daily > 365 or predict_daily < 2:
             raise ValidationError('Возможный диапазон прогноза 2-365 дней')
         return predict_daily
+
+
+class TrainingForm(forms.ModelForm):
+    company = forms.ModelChoiceField(label='Тикер компании', queryset=ListСompanies.objects.all())
+
+    class Meta:
+        model = TrainedNeuralNetwork
+        fields = ('neural_network_architecture', 'time_step', 'loss', 'optimizer', 'epochs', 'batch_size')

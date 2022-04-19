@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from neuron.neural_network.Choices import *
 
 
 class CustomUser(AbstractUser):
@@ -28,10 +29,11 @@ class NeuralNetwork(models.Model):
 
 
 class TrainedNeuralNetwork(models.Model):
-    creator = models.CharField(max_length=100)
+    # creator = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
+    creator = models.CharField(max_length=100, null=True)
     time_step = models.IntegerField(null=True)
-    loss = models.CharField(max_length=100)
-    optimizer = models.CharField(max_length=100)
+    loss = models.CharField(max_length=100, choices=choices_loss)
+    optimizer = models.CharField(max_length=100, choices=choices_optimizer)
     epochs = models.IntegerField()
     batch_size = models.IntegerField()
     file_trained_nn = models.FileField(upload_to='save_model_nn/%Y/%m/%d/')
@@ -39,7 +41,7 @@ class TrainedNeuralNetwork(models.Model):
     neural_network_architecture = models.ForeignKey('NeuralNetwork', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.creator
+        return str(self.pk)
 
     def get_absolute_url(self):
         return reverse('predict', kwargs={'nn_id': self.pk})

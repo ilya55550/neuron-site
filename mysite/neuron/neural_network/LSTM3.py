@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
+import tensorflow
 from keras.models import Sequential, load_model
 from keras.layers import Dense, LSTM, Dropout, GRU
 from keras.layers import *
@@ -13,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping
 
 
+
 def create_dataset(dataset, time_step=1):
     dataX, dataY = [], []
     for i in range(len(dataset) - time_step - 1):
@@ -20,6 +22,7 @@ def create_dataset(dataset, time_step=1):
         dataX.append(a)
         dataY.append(dataset[i + time_step, 0])
     return np.array(dataX), np.array(dataY)
+
 
 
 def predict(dataset, date, predict_daily):
@@ -68,7 +71,7 @@ def predict(dataset, date, predict_daily):
         history = model.fit(X_train, y_train, validation_data=(X_test, ytest), epochs=100, batch_size=64)
 
         # Сохранение обученной модели
-        model.save('LSTM_with100.h5')
+        model.save('LSTM_with100.h5')  # <FieldFile: save_model_nn/2022/04/03/СNN_model_kyjBosa.h5>
 
     predict = model.predict(X_test)
     predict = scaler.inverse_transform(predict)

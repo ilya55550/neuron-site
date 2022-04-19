@@ -4,7 +4,7 @@
 <html lang="en">
 
 {% block title %}
-        <title>{{title}}</title>
+<title>{{title}}</title>
 {% endblock %}
 
 {% block mainmenu %}
@@ -33,9 +33,20 @@
     <ul id="mainmenu" class="mainmenu">
         <li><a href="{% url 'home' %}"><img src="{% static 'neuron/images/logo.png' %}" width="40" height="90"></a>
         </li>
+
+        {% if request.user.researcher %}
+            <li><a href="{% url 'training' %}">Обучение</a></li>
+        {% endif %}
+
         {% for m in menu %}
-        <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
         {% endfor %}
+
+
+
+
+
+
         {% if request.user.is_authenticated %}
         <li class="last">{{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
         {% else %}
@@ -49,11 +60,11 @@
 
 <div class="main">
 
-{% block index %}
-{% endblock %}
+    {% block index %}
+    {% endblock %}
 
-{% block content %}
-{% endblock %}
+    {% block content %}
+    {% endblock %}
 
 </div>
 <!-- footer area start -->
@@ -63,7 +74,8 @@
             <div class="footer-content text-center">
                 <p class="copy-right">
                     Copyright &copy;<script>document.write(new Date().getFullYear());</script>
-                    All rights reserved</p>
+                    All rights reserved
+                </p>
             </div>
         </div>
     </div>

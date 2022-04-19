@@ -1,6 +1,6 @@
 import json
 # import .neural_network.LSTM2 as lstm
-from .neural_network import LSTM2, LSTM3, for_trainable_models
+from .neural_network import LSTM2, LSTM3, for_trainable_models, LSTM4
 from pyexpat.errors import messages
 
 from django.contrib.auth import logout, login
@@ -198,7 +198,7 @@ class ChoiceForecastParam(DataMixin, View):
     def get_context_data(self, *, object_list=None, **kwargs):
         # context = super().get_context_data(**kwargs)
         context = {}
-        c_def = self.get_user_context(title='Прогнозирование')
+        c_def = self.get_user_context(title='Выбор параметров прогнозирования')
         context['TrainedNeuralNetwork'] = TrainedNeuralNetwork.objects.all()
         return context | c_def
 
@@ -248,3 +248,53 @@ class PredictPastData(DataMixin, View):
 
     def get(self, request):
         return render(request, 'neuron/predict_past_data.html', context=self.get_context_data(request=request))
+
+
+class Training(DataMixin, View):
+    def get_context_data(self, *, object_list=None, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Обучение')
+        return c_def
+
+    def get(self, request):
+        form = TrainingForm()
+        return render(request, 'neuron/training.html', context=self.get_context_data() | {'form': form})
+
+    def post(self, request):
+        bound_form = TrainingForm(request.POST)
+
+        if bound_form.is_valid():
+            form_data = bound_form.cleaned_data
+
+            selected_company_ticker = form_data['company'].ticker
+            """Обращаемся к апи"""
+            data_for_graphic = data_API(selected_company_ticker)
+            """Формируем набор данных для нейронки"""
+            date = list(reversed(data_for_graphic.keys()))
+            value = list(reversed(data_for_graphic.values()))
+
+            path = LSTM4.predict(value, date, form_data)
+
+            # print(f'{form_data}\n')
+            # print(f"data[time_step]: {form_data['time_step']}")
+            # print(form_data['loss'])
+
+            model = bound_form.save(commit=False)
+            # print(model)
+            model.creator = request.user
+            model.file_trained_nn = path
+            # print(f'creator: {model.creator}')
+            # print(f'time_step: {model.time_step}')
+            # print(f'loss: {model.loss}')
+            # print(f'optimizer: {model.optimizer}')
+            # print(f'epochs: {model.epochs}')
+            # print(f'batch_size: {model.batch_size}')
+            # print(f'file_trained_nn: {model.file_trained_nn}')
+            # print(f'time_create: {model.time_create}')
+            # print(f'neural_network_architecture: {model.neural_network_architecture}')
+            model.save()
+
+            return redirect('home')
+
+        return render(request, 'neuron/training.html',
+                      context=self.get_context_data() | {'form': bound_form})
