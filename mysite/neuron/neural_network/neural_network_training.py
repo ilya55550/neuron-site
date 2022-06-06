@@ -20,13 +20,13 @@ from mysite.settings import BASE_DIR
 def create_dataset(dataset, time_step=1):
     dataX, dataY = [], []
     for i in range(len(dataset) - time_step - 1):
-        a = dataset[i:(i + time_step), 0]  ###i=0, 0,1,2,3-----99   100
+        a = dataset[i:(i + time_step), 0]
         dataX.append(a)
         dataY.append(dataset[i + time_step, 0])
     return np.array(dataX), np.array(dataY)
 
 
-def predict(dataset, date, form_data):
+def training(dataset, date, form_data):
     date = np.array(date)
     # dataset = np.array(dataset)
     # print(dataset[:10])
@@ -49,19 +49,20 @@ def predict(dataset, date, form_data):
     X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
     X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
 
-    # Initializing the Recurrent Neural Network
-    model = Sequential()
-    # Adding the first LSTM layer with a sigmoid activation function and some Dropout regularization
-    # Units - dimensionality of the output space
+    if str(form_data['neural_network_architecture']) == 'LSTM':
+        model = Sequential()
+        model.add(LSTM(units=50, return_sequences=True, input_shape=(time_step, 1)))
+        model.add(LSTM(units=50, return_sequences=True))
+        model.add(LSTM(units=50))
+        model.add(Dense(units=1))
 
-    model.add(LSTM(units=50, return_sequences=True, input_shape=(time_step, 1)))
-
-    model.add(LSTM(units=50, return_sequences=True))
-
-    model.add(LSTM(units=50))
-
-    # Adding the output layer
-    model.add(Dense(units=1))
+    if str(form_data['neural_network_architecture']) == 'GRU':
+        model = Sequential()
+        model.add(GRU(units=50, return_sequences=True, input_shape=(time_step, 1)))
+        model.add(GRU(units=50, return_sequences=True, input_shape=(time_step, 1)))
+        model.add(GRU(units=50, return_sequences=True, input_shape=(time_step, 1)))
+        model.add(GRU(units=50))
+        model.add(Dense(units=1))
 
     model.compile(optimizer=form_data['optimizer'], loss=form_data['loss'], metrics=['accuracy'])
     history = model.fit(X_train, y_train, validation_data=(X_test, ytest), epochs=form_data['epochs'],

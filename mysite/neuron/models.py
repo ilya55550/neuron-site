@@ -57,7 +57,7 @@ class ListСompanies(models.Model):
     ticker = models.CharField(max_length=10, db_index=True, unique=True)
 
     def __str__(self):
-        return self.ticker
+        return self.name
 
     # def get_absolute_url(self):
     #     return reverse('predict', kwargs={'company_id': self.pk})

@@ -1,18 +1,11 @@
 import json
-# import .neural_network.LSTM2 as lstm
-from .neural_network import LSTM2, LSTM3, for_trainable_models, LSTM4
-from pyexpat.errors import messages
+from .neural_network import predict, neural_network_training
 
 from django.contrib.auth import logout, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.db import transaction
-from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, FormView, View
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
 from .models import *
@@ -65,28 +58,6 @@ class LoginUser(DataMixin, LoginView):
 
     def get_success_url(self):
         return reverse_lazy('home')
-
-
-# @login_required
-# @transaction.atomic
-# def update_profile(request):
-#     if request.method == 'POST':
-#         user_form = RegisterUserForm(request.POST, instance=request.user)
-#         profile_form = ProfileUserForm(request.POST, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, _('Ваш профиль был успешно обновлен!'))
-#             return redirect('settings:profile')
-#         else:
-#             messages.error(request, _('Пожалуйста, исправьте ошибки.'))
-#     else:
-#         user_form = RegisterUserForm(instance=request.user)
-#         profile_form = ProfileUserForm(instance=request.user.profile)
-#     return render(request, 'neuron/register.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })
 
 
 def logout_user(request):
@@ -144,17 +115,9 @@ class Predict(DataMixin, View):
         request.session['date'] = date
         request.session['value'] = value
         """Формируем контекс для отправки в js"""
-
-        # res_date, res_volume, predict_date, predict_value = LSTM2.predict(value, date)
-        # context['res_date'] = json.dumps(res_date)
-        # context['res_volume'] = json.dumps(res_volume)
-        # context['predict_date'] = json.dumps(predict_date)
-        # context['predict_value'] = json.dumps(predict_value)
-
-        # context['data_for_graphic_with_predict'] = json.dumps(LSTM2.predict(value, date))
         context['data_for_graphic_with_predict'] = json.dumps(
-            for_trainable_models.predict(value, date, predict_daily, selected_trained_nn_path,
-                                         selected_trained_nn_time_step))
+            predict.predict(value, date, predict_daily, selected_trained_nn_path,
+                            selected_trained_nn_time_step))
 
         context['selected_company'] = json.dumps([request.session.get('selected_company_name'),
                                                   json.dumps(selected_company_ticker)])
@@ -192,11 +155,8 @@ class ShowNetwork(DataMixin, DetailView):
 
 
 class ChoiceForecastParam(DataMixin, View):
-    # form_class = ChoiceParam
-    # template_name = 'neuron/choice_forecast_param.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        # context = super().get_context_data(**kwargs)
         context = {}
         c_def = self.get_user_context(title='Выбор параметров прогнозирования')
         context['TrainedNeuralNetwork'] = TrainedNeuralNetwork.objects.all()
@@ -239,8 +199,8 @@ class PredictPastData(DataMixin, View):
         """Формируем контекс для отправки в js"""
 
         context['data_for_graphic_with_predict'] = json.dumps(
-            for_trainable_models.predict_past_data(value, date, predict_daily, selected_trained_nn_path,
-                                                   selected_trained_nn_time_step))
+            predict.predict_past_data(value, date, predict_daily, selected_trained_nn_path,
+                                      selected_trained_nn_time_step))
 
         context['selected_company'] = json.dumps([selected_company_name, selected_company_ticker])
 
@@ -252,7 +212,6 @@ class PredictPastData(DataMixin, View):
 
 class Training(DataMixin, View):
     def get_context_data(self, *, object_list=None, **kwargs):
-        # context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Обучение')
         return c_def
 
@@ -266,6 +225,8 @@ class Training(DataMixin, View):
         if bound_form.is_valid():
             form_data = bound_form.cleaned_data
 
+            print(str(form_data['neural_network_architecture']))
+
             selected_company_ticker = form_data['company'].ticker
             """Обращаемся к апи"""
             data_for_graphic = data_API(selected_company_ticker)
@@ -273,28 +234,17 @@ class Training(DataMixin, View):
             date = list(reversed(data_for_graphic.keys()))
             value = list(reversed(data_for_graphic.values()))
 
-            path = LSTM4.predict(value, date, form_data)
+            """Обучаем модель, возвращаем путь к файлу модели"""
+            path = neural_network_training.training(value, date, form_data)
 
-            # print(f'{form_data}\n')
-            # print(f"data[time_step]: {form_data['time_step']}")
-            # print(form_data['loss'])
-
+            """Возвращается модель с заполнеными полями с формы"""
             model = bound_form.save(commit=False)
-            # print(model)
+            """Дополняем модель"""
             model.creator = request.user
             model.file_trained_nn = path
-            # print(f'creator: {model.creator}')
-            # print(f'time_step: {model.time_step}')
-            # print(f'loss: {model.loss}')
-            # print(f'optimizer: {model.optimizer}')
-            # print(f'epochs: {model.epochs}')
-            # print(f'batch_size: {model.batch_size}')
-            # print(f'file_trained_nn: {model.file_trained_nn}')
-            # print(f'time_create: {model.time_create}')
-            # print(f'neural_network_architecture: {model.neural_network_architecture}')
             model.save()
 
-            return redirect('home')
+            return redirect('choice_forecast_param')
 
         return render(request, 'neuron/training.html',
                       context=self.get_context_data() | {'form': bound_form})

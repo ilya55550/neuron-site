@@ -14,10 +14,8 @@ window.onload = function () {
     var selected_company = loadJson('#selected_company');
     var data_for_graphic = loadJson('#jsonData');
 
-//data_for_graphic_with_predict[0]  # дата дефолт графика
-//data_for_graphic_with_predict[1]  # значения дефолт графика
-//data_for_graphic_with_predict[2]  # дата прогноза
-//data_for_graphic_with_predict[3]  # значения прогноза
+//data_for_graphic_with_predict[0]  # дата прогноза
+//data_for_graphic_with_predict[1]  # значения прогноза
 
 
     var data = data_for_graphic.map((item) => item.data);
@@ -49,7 +47,7 @@ window.onload = function () {
         labels: data_for_graphic_with_predict[0],
         datasets: [
             {
-              label: `График компании: ${selected_company[0]}, тикер: ${selected_company[1]}`,
+              label: `Прогноз компании: ${selected_company[0]}, тикер: ${selected_company[1]}`,
 //              backgroundColor: 'black',
               borderColor: 'lightblue',
               pointRadius: 0,
@@ -63,33 +61,12 @@ window.onload = function () {
         }
     };
 
-            var config3 = {
-        type: 'line',
-        data: {
-        labels: data_for_graphic_with_predict[2],
-        datasets: [
-            {
-              label: `Прогноз компании: ${selected_company[0]}, тикер: ${selected_company[1]}`,
-//              backgroundColor: 'black',
-              borderColor: 'lightblue',
-              pointRadius: 0,
-              data: data_for_graphic_with_predict[3],
-              fill: false
-            }
-          ]
-        },
-        options: {
-        responsive: true
-        }
-    };
 
     var ctx = document.getElementById('myChart').getContext('2d');
     var ctx2 = document.getElementById('myChart2').getContext('2d');
-    var ctx3 = document.getElementById('myChart3').getContext('2d');
 
     window.myLine = new Chart(ctx, config);
     window.myLine2 = new Chart(ctx2, config2);
-    window.myLine3 = new Chart(ctx3, config3);
 
 
 };
