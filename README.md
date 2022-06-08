@@ -8,6 +8,9 @@
 - Django
 - PostgreSQL
 - Keras
+- Numpy
+- Sklearn
+- Tensorflow
 - Chart.js
 
 ## Установка
