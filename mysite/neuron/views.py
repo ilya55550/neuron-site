@@ -1,4 +1,8 @@
+import datetime
 import json
+import os
+
+from mysite.settings import BASE_DIR
 from .neural_network import predict, neural_network_training
 
 from django.contrib.auth import logout, login
@@ -9,6 +13,7 @@ from django.views.generic import ListView, DetailView, CreateView, FormView, Vie
 
 from .forms import *
 from .models import *
+from .neural_network.retraining import retraining
 from .utils import *
 
 
@@ -163,6 +168,26 @@ class ChoiceForecastParam(DataMixin, View):
         return context | c_def
 
     def get(self, request):
+
+        companies = ListСompanies.objects.all()
+        for company in companies:
+            try:
+                model = TrainedNeuralNetwork.objects.get(company=company.name)
+                """Обращаемся к апи"""
+                data_for_graphic = data_API(company.ticker)
+                """Формируем набор данных для нейронки"""
+                value = list(reversed(data_for_graphic.values()))
+                """Обучаем модель, возвращаем путь к файлу модели"""
+                retraining(value, model.time_step, str(model.file_trained_nn))
+                model.time_update = datetime.datetime.now()
+                model.save()
+                print(f"Для {str(company.name)} выполнилось!!!!!!!!!!")
+            except Exception as e:
+                continue
+
+
+        1/0
+
         form = ChoiceParam()
         return render(request, 'neuron/choice_forecast_param.html', context=self.get_context_data() | {'form': form})
 

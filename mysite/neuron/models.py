@@ -73,6 +73,7 @@ class TrainedNeuralNetwork(models.Model):
     file_trained_nn = models.FileField(upload_to='harvested_save_model_nn/')
     company = models.CharField(max_length=100, null=True)
     time_step = models.IntegerField(null=True)
+    time_update = models.DateTimeField(null=True)
 
     def __str__(self):
         return str(self.pk)
