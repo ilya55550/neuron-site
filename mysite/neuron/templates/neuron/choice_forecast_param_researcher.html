@@ -1,0 +1,58 @@
+{% extends 'neuron/base.html' %}
+
+
+
+{% block content %}
+
+
+<div class="body-for-reg">
+    <div class="container-reg">
+        <div class="text-train">{{title}}</div>
+        <form method="post">
+            {% csrf_token %}
+            {% for f in form %}
+            <p><label class="form-label2" for="{{ f.id_for_label }}">{{f.label}}: </label><br>{{f}}</p>
+            <div class="form-error">{{f.errors}}</div>
+            {% endfor %}
+            <button class="train-button" type="submit">Сделать прогноз</button>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="hforecast">Список обученных нейронных сетей</div>
+    <div class="demo-area">
+        <div class="container">
+            <div class="row">
+                {% for n in TrainedNeuralNetworkUser %}
+                <div class="col-md-4 col-sm-4 col-xs-12 col-2">
+                    <div class="demo-item">
+                        {% if n.neural_network_architecture.image %}
+                            <div class="thumb-area">
+                                <a href="#" target="_blank"><img src="{{n.neural_network_architecture.image.url}}" alt="demo image"></a>
+                                <a href="#" class="lets-view" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
+                            </div>
+                        {% endif %}
+                        <div class="demo-title">
+                            <h2>id - {{n.id}}</h2>
+                            <h2>creator - {{n.creator}}</h2>
+                            <h2>loss - {{n.loss}}</h2>
+                            <h2>optimizer - {{n.optimizer}}<br></h2>
+                            <h2>epochs - {{n.epochs}}</h2>
+                            <h2>batch_size - {{n.batch_size}}</h2>
+                            <h2>time_step - {{n.time_step}}</h2>
+                            <h2>time_create - {{n.time_create}}</h2>
+                            <h2>architecture - {{n.neural_network_architecture}}</h2>
+                            <h2>company - {{n.company}}</h2>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -49,10 +49,6 @@
         {% endfor %}
 
 
-
-
-
-
         {% if request.user.is_authenticated %}
         <li class="last">{{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
         {% else %}
@@ -64,7 +60,7 @@
 </div>
 {% endblock mainmenu %}
 
-<div class="main">
+<div class="main2">
 
     {% block index %}
     {% endblock %}

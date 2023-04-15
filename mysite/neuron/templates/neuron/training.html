@@ -1,15 +1,21 @@
 {% extends 'neuron/base.html' %}
 
-
-
 {% block content %}
 
-<h1>Параметры нейронки</h1>
-    <form id="data" action="{% url 'training' %}" method="POST">
-        {% csrf_token %}
-        {{ form.as_table }}
-        <button type="submit">Обучить</button>
-    </form>
+
+<div class="body-for-reg">
+    <div class="container-reg">
+        <div class="text-train">{{title}}</div>
+        <form method="post">
+            {% csrf_token %}
+            {% for f in form %}
+            <p><label class="form-label2" for="{{ f.id_for_label }}">{{f.label}}: </label><br>{{f}}</p>
+            <div class="form-error">{{f.errors}}</div>
+            {% endfor %}
+            <button class="train-button" type="submit">Обучить</button>
+        </form>
+    </div>
+</div>
 
 
 {% endblock %}

@@ -28,7 +28,7 @@ class NeuralNetwork(models.Model):
         ordering = ['id']
 
 
-class TrainedNeuralNetwork(models.Model):
+class TrainedNeuralNetworkUser(models.Model):
     # creator = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
     creator = models.CharField(max_length=100, null=True)
     time_step = models.IntegerField(null=True)
@@ -39,6 +39,7 @@ class TrainedNeuralNetwork(models.Model):
     file_trained_nn = models.FileField(upload_to='save_model_nn/%Y/%m/%d/')
     time_create = models.DateTimeField(auto_now_add=True)
     neural_network_architecture = models.ForeignKey('NeuralNetwork', on_delete=models.CASCADE)
+    company = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return str(self.pk)
@@ -47,8 +48,8 @@ class TrainedNeuralNetwork(models.Model):
         return reverse('predict', kwargs={'nn_id': self.pk})
 
     class Meta:
-        verbose_name = 'Обученная нейронная сеть'
-        verbose_name_plural = 'Обученные нейронные сети'
+        verbose_name = 'Пользовательская обученная нейронная сеть'
+        verbose_name_plural = 'Пользовательские обученные нейронные сети'
         ordering = ['-time_create']
 
 
@@ -66,3 +67,19 @@ class ListСompanies(models.Model):
         verbose_name = 'Компания'
         verbose_name_plural = 'Компании'
         ordering = ['ticker']
+
+
+class TrainedNeuralNetwork(models.Model):
+    file_trained_nn = models.FileField(upload_to='harvested_save_model_nn/')
+    company = models.CharField(max_length=100, null=True)
+    time_step = models.IntegerField(null=True)
+
+    def __str__(self):
+        return str(self.pk)
+
+    def get_absolute_url(self):
+        return reverse('predict', kwargs={'nn_id': self.pk})
+
+    class Meta:
+        verbose_name = 'Обученная нейронная сеть'
+        verbose_name_plural = 'Обученные нейронные сети'

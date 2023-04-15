@@ -16,3 +16,5 @@ with open('res.csv', 'w', newline='') as csvfile:
 
     """заходим в psql"""
     """\COPY таблица FROM /home/ilya/pycharmprojects/neuron_project/res.csv DELIMITER ‘,’ CSV HEADER;"""
+
+    """\COPY neuron_listcompanies FROM C:\Users\User\PycharmProjects\neuron-site\res.csv DELIMITER ',' CSV HEADER;"""

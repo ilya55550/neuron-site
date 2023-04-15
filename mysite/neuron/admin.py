@@ -26,13 +26,20 @@ class ListСompaniesAdmin(admin.ModelAdmin):
     list_display = ('name', 'ticker')
 
 
-class TrainedNeuralNetworkAdmin(admin.ModelAdmin):
+class TrainedNeuralNetworkUserAdmin(admin.ModelAdmin):
     list_display = (
         'creator', 'time_step', 'loss', 'optimizer', 'epochs', 'batch_size', 'file_trained_nn', 'time_create',
         'neural_network_architecture')
 
 
+class TrainedNeuralNetworkAdmin(admin.ModelAdmin):
+    list_display = (
+        'time_step','file_trained_nn'
+    )
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(NeuralNetwork, NeuralNetworkAdmin)
 admin.site.register(ListСompanies, ListСompaniesAdmin)
+admin.site.register(TrainedNeuralNetworkUser, TrainedNeuralNetworkUserAdmin)
 admin.site.register(TrainedNeuralNetwork, TrainedNeuralNetworkAdmin)

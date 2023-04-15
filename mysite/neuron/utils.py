@@ -6,9 +6,11 @@ from django.core.cache import cache
 from .models import *
 
 
-def data_API(symbol, function='Daily'):
+def data_API(symbol, function='DAILY_ADJUSTED'):
     """https://www.alphavantage.co/"""
-    dict_function = {'Daily': 'Time Series (Daily)',
+    "TIME_SERIES_DAILY_ADJUSTED"
+
+    dict_function = {'DAILY_ADJUSTED': 'Time Series (Daily)',
                      'Weekly': 'Weekly Time Series',
                      'Monthly': 'Monthly Time Series'
                      }
@@ -24,7 +26,7 @@ def data_API(symbol, function='Daily'):
 
 
 menu = [
-    {'title': "Прогнозирование", 'url_name': 'choice_forecast_param'},
+    # {'title': "Прогнозирование", 'url_name': 'choice_forecast_param'},
     {'title': "О сайте", 'url_name': 'about'},
     {'title': "Обратная связь", 'url_name': 'contact'},
 ]

@@ -20,7 +20,7 @@ class HomePage(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Главная страница')
-        context['count_trained_nn'] = TrainedNeuralNetwork.objects.count()
+        context['count_trained_nn'] = TrainedNeuralNetworkUser.objects.count()
         context['count_user'] = CustomUser.objects.count()
 
         return context | c_def
@@ -159,7 +159,7 @@ class ChoiceForecastParam(DataMixin, View):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = {}
         c_def = self.get_user_context(title='Выбор параметров прогнозирования')
-        context['TrainedNeuralNetwork'] = TrainedNeuralNetwork.objects.all()
+        context['TrainedNeuralNetwork'] = TrainedNeuralNetworkUser.objects.all()
         return context | c_def
 
     def get(self, request):
@@ -169,10 +169,49 @@ class ChoiceForecastParam(DataMixin, View):
     def post(self, request):
         bound_form = ChoiceParam(request.POST)
         if bound_form.is_valid():
+            company = bound_form.cleaned_data['company'].name
+            request.session['selected_company_name'] = company
+            request.session['selected_company_ticker'] = bound_form.cleaned_data['company'].ticker
+            # request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
+            request.session['predict_daily'] = bound_form.cleaned_data['predict_daily']
+
+            try:
+                nn = TrainedNeuralNetwork.objects.get(company=company)
+            except Exception as e:
+                print('ку ' + str(e))
+                return
+
+            request.session['selected_trained_nn_path'] = str(nn.file_trained_nn)
+            request.session['selected_trained_nn_time_step'] = nn.time_step
+
+            return redirect('predict')
+
+        return render(request, 'neuron/choice_forecast_param.html',
+                      context=self.get_context_data() | {'form': bound_form})
+
+
+class ChoiceForecastParamResearcher(DataMixin, View):
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = {}
+        c_def = self.get_user_context(title='Выбор параметров прогнозирования')
+        context['TrainedNeuralNetworkUser'] = TrainedNeuralNetworkUser.objects.all()
+        return context | c_def
+
+    def get(self, request):
+        form = ChoiceParamResearcher()
+        return render(request, 'neuron/choice_forecast_param_researcher.html',
+                      context=self.get_context_data() | {'form': form})
+
+    def post(self, request):
+        bound_form = ChoiceParamResearcher(request.POST)
+        if bound_form.is_valid():
             request.session['selected_company_name'] = bound_form.cleaned_data['company'].name
             request.session['selected_company_ticker'] = bound_form.cleaned_data['company'].ticker
             # request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
             request.session['predict_daily'] = bound_form.cleaned_data['predict_daily']
+
+            print(bound_form.cleaned_data['trained_nn_id'].__dict__)
 
             request.session['selected_trained_nn_path'] = str(bound_form.cleaned_data['trained_nn_id'].file_trained_nn)
             request.session['selected_trained_nn_time_step'] = bound_form.cleaned_data['trained_nn_id'].time_step
@@ -212,7 +251,7 @@ class PredictPastData(DataMixin, View):
 
 class Training(DataMixin, View):
     def get_context_data(self, *, object_list=None, **kwargs):
-        c_def = self.get_user_context(title='Обучение')
+        c_def = self.get_user_context(title='Обучение нейронной сети')
         return c_def
 
     def get(self, request):
@@ -244,7 +283,7 @@ class Training(DataMixin, View):
             model.file_trained_nn = path
             model.save()
 
-            return redirect('choice_forecast_param')
+            return redirect('home')
 
         return render(request, 'neuron/training.html',
                       context=self.get_context_data() | {'form': bound_form})

@@ -46,28 +46,40 @@ margin: 0px 0px 0px 0px;
 }
 
 .main {
+  background: url(../img/bg/slider-bg.jpg) center center/cover no-repeat;
+  min-height: calc(100vh - 80px);
+}
+
+.main2 {
   min-height: calc(100vh - 80px);
 }
 
 .form-input {
     width: 100%;
-    padding: 10px;
+    padding: 5px 5px 5px 10px;
     margin: 5px 0 15px 0;
     display: inline-block;
     border: none;
     color: #000000;
-    font-size: 18px;
+    font-size: 20px;
     background: #f1f1f1;
+    font-family: cursive;
 }
 
 .body-for-reg{
-    background: url(../img/bg/slider-bg.jpg) center center/cover no-repeat;
-    height: 600px;
+    background-size: cover;
 }
 
 .text-reg{
     color: #fdc073;
     font-size: 20px;
+    text-align: center;
+}
+
+.text-train{
+    color: #fdc073;
+    margin: 10px;
+    font-size: 30px;
     text-align: center;
 }
 
@@ -183,6 +195,17 @@ p.link-read-post a {
     font-weight: bold;
     font-size: 15px;
 }
+
+.form-label2 {
+    margin: 3px 0px;
+    display: inline-block;
+    min-width: 150px;
+    color: #fdc073;
+    vertical-align: top;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 .form-error ul {
     list-style: none;
     padding: 0;
@@ -387,6 +410,7 @@ ul.mainmenu li a:hover {
  }
  .demo-item a img{
     max-width: 100%;
+    width: 600px;
     display: block;
  }
  .demo-title{
@@ -457,4 +481,55 @@ ul.mainmenu li a:hover {
     color: #fdc073;
     letter-spacing: 0.05em;
     font-size: 17px;
+}
+
+.container-nn{
+    background-color: #3F4137;
+    margin: 1px 400px;
+    padding: 13px;
+    font-family: Arial;
+    box-shadow: 4px 3px 6px 3px #888;
+    border-radius: 10px;
+}
+
+.form-control-choice {
+    padding: 0 10px;
+    font-size: 20px;
+    color: black;
+    text-align: center;
+    height: 40px;
+    width: 375px;
+}
+
+
+.hforecast {
+    margin: 20px;
+    font-size: 200%;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #fdc073;
+    text-align: center;
+}
+
+.train-button {
+  display: inline-block;
+  padding: 10px 30px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: black;
+  background-color: #fdc073;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px #999;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.border_style_groove{
+	border: 5px groove #1E90FF;
+	padding: 3px;
+	margin-bottom: 5px;
 }

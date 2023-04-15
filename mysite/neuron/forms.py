@@ -66,15 +66,26 @@ class ContactForm(forms.Form):
     captcha = CaptchaField()
 
 
-class ChoiceParam(forms.Form):
-    company = forms.ModelChoiceField(label='Тикер компании', queryset=ListСompanies.objects.all())
+class ChoiceParamResearcher(forms.Form):
+    company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={'class': 'form-input'}),
+                                     queryset=ListСompanies.objects.all())
     # time_frame = forms.ChoiceField(label='Time_Frame',
     #                                choices=(('Daily', 'Daily'),
     #                                         ('Weekly', 'Weekly'),
     #                                         ('Monthly', 'Monthly'),
     #                                         ))
-    trained_nn_id = forms.ModelChoiceField(label='Модель нейронной сети', queryset=TrainedNeuralNetwork.objects.all())
-    predict_daily = forms.IntegerField(label='Количество дней прогноза')
+    trained_nn_id = forms.ModelChoiceField(label='Модель нейронной сети',
+                                           widget=forms.Select(attrs={'class': 'form-input'}),
+                                           queryset=TrainedNeuralNetworkUser.objects.all())
+    predict_daily = forms.IntegerField(label='Количество дней прогноза',
+                                       widget=forms.TextInput(attrs={'class': 'form-input'}))
+
+
+class ChoiceParam(forms.Form):
+    company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={'class': 'form-input'}),
+                                     queryset=ListСompanies.objects.all())
+    predict_daily = forms.IntegerField(label='Количество дней прогноза',
+                                       widget=forms.TextInput(attrs={'class': 'form-input'}))
 
     def clean_predict_daily(self):
         predict_daily = self.cleaned_data['predict_daily']
@@ -84,8 +95,17 @@ class ChoiceParam(forms.Form):
 
 
 class TrainingForm(forms.ModelForm):
-    company = forms.ModelChoiceField(label='Тикер компании', queryset=ListСompanies.objects.all())
+    company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={'class': 'form-input'}),
+                                     queryset=ListСompanies.objects.all())
 
     class Meta:
-        model = TrainedNeuralNetwork
-        fields = ('neural_network_architecture', 'time_step', 'loss', 'optimizer', 'epochs', 'batch_size')
+        model = TrainedNeuralNetworkUser
+        fields = ('neural_network_architecture', 'time_step', 'loss', 'optimizer', 'epochs', 'batch_size', 'company')
+        widgets = {
+            "neural_network_architecture": forms.Select(attrs={'class': 'form-input'}),
+            "time_step": forms.TextInput(attrs={'class': 'form-input'}),
+            "loss": forms.Select(attrs={'class': 'form-input'}),
+            "optimizer": forms.Select(attrs={'class': 'form-input'}),
+            "epochs": forms.TextInput(attrs={'class': 'form-input'}),
+            "batch_size": forms.TextInput(attrs={'class': 'form-input'}),
+        }
