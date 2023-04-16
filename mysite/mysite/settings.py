@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'neuron',
-        'USER': 'postgres',
-        'PASSWORD': '1',
+        'USER': 'neuron',
+        'PASSWORD': 'neuron',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -140,6 +140,29 @@ CACHES = {
     }
 }
 
-# Celery settings
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# # Celery settings
+# CELERY_BROKER_URL = "redis://localhost:6379"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+# redis settings
+REDIS_HOST = '0.0.0.0'
+REDIS_PORT = '6379'
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+
+    ),
+}
