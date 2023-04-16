@@ -1,0 +1,32 @@
+{% extends 'neuron/base2.html' %}
+{% load static %}
+
+{% block title %}
+    <title>{{title}}</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="flex-graphic">
+
+    {% block comment %}
+    <div class="vertical-menu">
+        {% for company in companies %}
+        <a href="#">{{company.ticker}}</a>
+        {% endfor %}
+    </div>
+    {% endblock comment %}
+
+
+    <div style="display: none" id="accuracy" data-json="{{ accuracy }}"></div>
+    <div style="display: none" id="loss" data-json="{{ loss }}"></div>
+
+    <div class="res_graphic">
+        <canvas id="myChart"></canvas>
+        <canvas id="myChart2"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="{% static 'neuron/js/metrics.js' %}"></script>
+    </div>
+</div>
+{% endblock %}

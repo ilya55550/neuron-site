@@ -279,7 +279,7 @@ class Training(DataMixin, View):
             value = list(reversed(data_for_graphic.values()))
 
             """Обучаем модель, возвращаем путь к файлу модели"""
-            path = neural_network_training.training(value, date, form_data)
+            path, accuracy, loss = neural_network_training.training(value, date, form_data)
 
             """Возвращается модель с заполнеными полями с формы"""
             model = bound_form.save(commit=False)
@@ -288,7 +288,48 @@ class Training(DataMixin, View):
             model.file_trained_nn = path
             model.save()
 
-            return redirect('home')
+            #####################
+            request.session['accuracy'] = accuracy
+            request.session['loss'] = loss
+
+            return redirect('training_metrics')
 
         return render(request, 'neuron/training.html',
                       context=self.get_context_data() | {'form': bound_form})
+
+
+class TrainingMetrics(DataMixin, View):
+    def get_context_data(self, *, request, object_list=None, **kwargs):
+        context = {}
+        c_def = self.get_user_context(title='Метрики')
+        """Достаём данные из сессии"""
+        accuracy = request.session.get('accuracy')
+        loss = request.session.get('loss')
+
+        """Формируем контекс для отправки в js"""
+        context['accuracy'] = json.dumps(
+            [
+
+                {
+                    'epoch': int(epoch),
+                    'value': value,
+                }
+                for epoch, value in accuracy.items()
+            ]
+        )
+
+        context['loss'] = json.dumps(
+            [
+
+                {
+                    'epoch': int(epoch),
+                    'value': value,
+                }
+                for epoch, value in loss.items()
+            ]
+        )
+
+        return context | c_def
+
+    def get(self, request):
+        return render(request, 'neuron/training_metrics.html', context=self.get_context_data(request=request))

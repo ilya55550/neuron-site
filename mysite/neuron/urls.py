@@ -16,4 +16,6 @@ urlpatterns = [
     path('choice_forecast_param/predict/', Predict.as_view(), name='predict'),
     path('choice_forecast_param/predict/predict_past', PredictPastData.as_view(), name='predict_past_data'),
     path('training/', Training.as_view(), name='training'),
+    path('training_metrics/', TrainingMetrics.as_view(), name='training_metrics'),
+
 ]

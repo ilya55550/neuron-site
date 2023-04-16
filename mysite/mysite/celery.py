@@ -12,6 +12,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'retraining_models': {
         'task': 'neuron.tasks.retraining_models',
-        'schedule': crontab(minute='*/5')
+        'schedule': crontab(minute=0, hour=0)
     },
 }

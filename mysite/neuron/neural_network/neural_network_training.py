@@ -84,4 +84,7 @@ def training(dataset, date, form_data):
     # print("MAE:", np.mean(abs(diff)))
     # print("RMSE:", np.sqrt(np.mean(diff ** 2)))
 
-    return path
+    acurracy_dict = {history.epoch[i] + 1: history.history['accuracy'][i] for i in range(len(history.epoch))}
+    loss_dict = {history.epoch[i] + 1: history.history['loss'][i] for i in range(len(history.epoch))}
+
+    return path, acurracy_dict, loss_dict
