@@ -1,5 +1,5 @@
 {% extends 'neuron/base.html' %}
-
+{% load static %}
 
 
 {% block content %}
@@ -54,5 +54,11 @@
         </div>
     </div>
 
+<script>
+ let async_handler = {% url 'async_handler' %}
+</script>
+
+<script type="text/javascript" src="{% static 'neuron/js/choice_forecast_param.js' %}"></script>
 
 {% endblock %}
+

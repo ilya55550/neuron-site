@@ -18,7 +18,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-class NeuralNetworkAdmin(admin.ModelAdmin):
+class ArchitectureNeuralNetworkAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
@@ -39,7 +39,7 @@ class TrainedNeuralNetworkAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(NeuralNetwork, NeuralNetworkAdmin)
+admin.site.register(ArchitectureNeuralNetwork, ArchitectureNeuralNetworkAdmin)
 admin.site.register(ListСompanies, ListСompaniesAdmin)
 admin.site.register(TrainedNeuralNetworkUser, TrainedNeuralNetworkUserAdmin)
 admin.site.register(TrainedNeuralNetwork, TrainedNeuralNetworkAdmin)

@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-
+from django.http import JsonResponse
 from mysite.settings import BASE_DIR
 from .neural_network import predict, neural_network_training
 
@@ -18,7 +18,7 @@ from .utils import *
 
 
 class HomePage(DataMixin, ListView):
-    model = NeuralNetwork
+    model = ArchitectureNeuralNetwork
     template_name = 'neuron/index.html'
     context_object_name = 'network'  # В эту переменную помещаются данные из указанной модели
 
@@ -31,7 +31,7 @@ class HomePage(DataMixin, ListView):
         return context | c_def
 
     def get_queryset(self):
-        return NeuralNetwork.objects.all()
+        return ArchitectureNeuralNetwork.objects.all()
 
 
 class RegisterUser(DataMixin, CreateView):
@@ -71,7 +71,7 @@ def logout_user(request):
 
 
 class About(DataMixin, ListView):
-    model = NeuralNetwork
+    model = ArchitectureNeuralNetwork
     template_name = 'neuron/about.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -146,7 +146,7 @@ class Predict(DataMixin, View):
 
 
 class ShowNetwork(DataMixin, DetailView):
-    model = NeuralNetwork
+    model = ArchitectureNeuralNetwork
     template_name = 'neuron/shownetwork.html'
     slug_url_kwarg = 'network_slug'
     context_object_name = 'network'
@@ -277,6 +277,36 @@ class Training(DataMixin, View):
             """Формируем набор данных для нейронки"""
             date = list(reversed(data_for_graphic.keys()))
             value = list(reversed(data_for_graphic.values()))
+            # print(value)
+            # print(type(value))
+            # print(len(value))
+            # with open(r"dataset.txt", "w") as file:
+            #     for i in value:
+            #         file.write(i + ' ')
+            #
+            # print('записано')
+            # # os.sleep(5)
+            #
+            # with open("dataset.txt", "r") as f:
+            #     value2 = f.read()
+            #
+            # print(value2)
+            # print(type(value2))
+            # print(len(value2))
+
+            # a = value2.split()
+            #
+            # print(a)
+            # print(type(a))
+            # print(len(a))
+
+            # 139.0
+            #
+            # <
+            #
+            # class 'str'>
+            #
+            # 35180
 
             """Обучаем модель, возвращаем путь к файлу модели"""
             path, accuracy, loss = neural_network_training.training(value, date, form_data)
@@ -333,3 +363,30 @@ class TrainingMetrics(DataMixin, View):
 
     def get(self, request):
         return render(request, 'neuron/training_metrics.html', context=self.get_context_data(request=request))
+
+
+class AsyncHandler(View):
+    def post(self, request):
+        context = {}
+        post_data = json.loads(request.body.decode("utf-8"))
+        print(post_data)
+        if 'company_id' in post_data:
+            print(post_data['company_id'])
+            models = TrainedNeuralNetworkUser.objects.filter(company__id=post_data['company_id'])
+            context['nn'] = []
+            for model in models:
+                context['nn'].append({
+                    'id': model.id,
+                    'creator': model.creator,
+                    'loss': model.loss,
+                    'optimizer': model.optimizer,
+                    'epochs': model.epochs,
+                    'batch_size': model.epochs,
+                    'time_step': model.time_step,
+                    'time_create': model.time_create,
+                    'architecture': model.neural_network_architecture.name,
+                    'company': model.company.name
+                })
+            print(context['nn'])
+
+            return JsonResponse(context)

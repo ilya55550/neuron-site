@@ -18,4 +18,6 @@ urlpatterns = [
     path('training/', Training.as_view(), name='training'),
     path('training_metrics/', TrainingMetrics.as_view(), name='training_metrics'),
 
+    path('async_handler/', AsyncHandler.as_view(), name='async_handler'),
+
 ]

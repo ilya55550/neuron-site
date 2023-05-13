@@ -67,7 +67,8 @@ class ContactForm(forms.Form):
 
 
 class ChoiceParamResearcher(forms.Form):
-    company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={'class': 'form-input'}),
+    company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={"class": "select-company",
+                                                                                        "onchange": "if (this.selectedIndex) send_company();"}),
                                      queryset=ListСompanies.objects.all())
     # time_frame = forms.ChoiceField(label='Time_Frame',
     #                                choices=(('Daily', 'Daily'),

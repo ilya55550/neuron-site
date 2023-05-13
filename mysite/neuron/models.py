@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     researcher = models.BooleanField(default=False, blank=True)
 
 
-class NeuralNetwork(models.Model):
+class ArchitectureNeuralNetwork(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, db_index=True)
     description = models.TextField(blank=True)
@@ -38,8 +38,10 @@ class TrainedNeuralNetworkUser(models.Model):
     batch_size = models.IntegerField()
     file_trained_nn = models.FileField(upload_to='save_model_nn/%Y/%m/%d/')
     time_create = models.DateTimeField(auto_now_add=True)
-    neural_network_architecture = models.ForeignKey('NeuralNetwork', on_delete=models.CASCADE)
-    company = models.CharField(max_length=100, null=True)
+    neural_network_architecture = models.ForeignKey('ArchitectureNeuralNetwork', on_delete=models.CASCADE)
+    # company = models.CharField(max_length=100, null=True)
+    company = models.ForeignKey('ListСompanies', on_delete=models.CASCADE, related_name='get_list_companies')
+
 
     def __str__(self):
         return str(self.pk)
@@ -71,7 +73,8 @@ class ListСompanies(models.Model):
 
 class TrainedNeuralNetwork(models.Model):
     file_trained_nn = models.FileField(upload_to='harvested_save_model_nn/')
-    company = models.CharField(max_length=100, null=True)
+    # company = models.CharField(max_length=100, null=True)
+    company = models.ForeignKey('ListСompanies', on_delete=models.CASCADE, related_name='get_list_companies_for_default', null=True)
     time_step = models.IntegerField(null=True)
     time_update = models.DateTimeField(null=True)
 

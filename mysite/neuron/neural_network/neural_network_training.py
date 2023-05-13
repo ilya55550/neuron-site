@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
-import tensorflow
+import tensorflow as tf
 from keras.models import Sequential, load_model
 from keras.layers import Dense, LSTM, Dropout, GRU
 from keras.layers import *
@@ -49,6 +49,15 @@ def training(dataset, date, form_data):
     X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
     X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
 
+    # print('X_train')
+    # print(X_train)
+    # print('y_train')
+    # print(y_train)
+    # print('X_test')
+    # print(X_test)
+    # print('ytest')
+    # print(ytest)
+
     if str(form_data['neural_network_architecture']) == 'LSTM':
         model = Sequential()
         model.add(LSTM(units=50, return_sequences=True, input_shape=(time_step, 1)))
@@ -65,8 +74,17 @@ def training(dataset, date, form_data):
         model.add(Dense(units=1))
 
     model.compile(optimizer=form_data['optimizer'], loss=form_data['loss'], metrics=['accuracy'])
-    history = model.fit(X_train, y_train, validation_data=(X_test, ytest), epochs=form_data['epochs'],
+    # model.compile(optimizer=form_data['optimizer'], loss=form_data['loss'],
+    #               metrics=[tf.keras.metrics.CategoricalAccuracy()])
+
+    history = model.fit(X_train, y_train, validation_data=(X_test, ytest),
+                        epochs=form_data['epochs'],
                         batch_size=form_data['batch_size'])
+
+    # tf.keras.metrics.CategoricalAccuracy(), metrics.AUC(), metrics.Precision(), metrics.Recall()
+    # model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer,
+    #               metrics=[tf.keras.metrics.CategoricalAccuracy(), metrics.AUC(), metrics.Precision(),
+    #                        metrics.Recall()])
 
     # Сохранение обученной модели
     current_datetime = datetime.now()
@@ -83,6 +101,7 @@ def training(dataset, date, form_data):
     # print("MSE:", np.mean(diff ** 2))
     # print("MAE:", np.mean(abs(diff)))
     # print("RMSE:", np.sqrt(np.mean(diff ** 2)))
+    # print(history.history.keys())
 
     acurracy_dict = {history.epoch[i] + 1: history.history['accuracy'][i] for i in range(len(history.epoch))}
     loss_dict = {history.epoch[i] + 1: history.history['loss'][i] for i in range(len(history.epoch))}

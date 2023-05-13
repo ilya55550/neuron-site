@@ -41,7 +41,7 @@ class DataMixin:
         if not network:
             # first_name_networks = NeuralNetwork.objects.get(pk=1)
             # other_name_networks = NeuralNetwork.objects.all()[1:]
-            networks = NeuralNetwork.objects.all()
+            networks = ArchitectureNeuralNetwork.objects.all()
             cache.set('network', network, 600)
 
         user_menu = menu.copy()
