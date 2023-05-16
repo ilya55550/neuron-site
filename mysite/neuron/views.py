@@ -177,13 +177,12 @@ class ChoiceForecastParam(DataMixin, View):
             company = bound_form.cleaned_data['company'].name
             request.session['selected_company_name'] = company
             request.session['selected_company_ticker'] = bound_form.cleaned_data['company'].ticker
-            # request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
             request.session['predict_daily'] = bound_form.cleaned_data['predict_daily']
 
             try:
-                nn = TrainedNeuralNetwork.objects.get(company=company)
+                nn = TrainedNeuralNetwork.objects.get(company__name=company)
             except Exception as e:
-                print('ку ' + str(e))
+                print('Недоступно для выбранной компании')
                 return
 
             request.session['selected_trained_nn_path'] = str(nn.file_trained_nn)
@@ -213,7 +212,6 @@ class ChoiceForecastParamResearcher(DataMixin, View):
         if bound_form.is_valid():
             request.session['selected_company_name'] = bound_form.cleaned_data['company'].name
             request.session['selected_company_ticker'] = bound_form.cleaned_data['company'].ticker
-            # request.session['selected_time_frame'] = bound_form.cleaned_data['time_frame']
             request.session['predict_daily'] = bound_form.cleaned_data['predict_daily']
 
             print(bound_form.cleaned_data['trained_nn_id'].__dict__)
