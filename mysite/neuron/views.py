@@ -20,7 +20,7 @@ from .utils import *
 class HomePage(DataMixin, ListView):
     model = ArchitectureNeuralNetwork
     template_name = 'neuron/index.html'
-    context_object_name = 'network'  # В эту переменную помещаются данные из указанной модели
+    context_object_name = 'network'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,9 +37,7 @@ class HomePage(DataMixin, ListView):
 class RegisterUser(DataMixin, CreateView):
     form_class = CustomUserCreationForm
     template_name = 'neuron/register.html'
-    success_url = reverse_lazy('login')  # перенаправление, по умолчанию при реализации get_absolute_url в модели,
-
-    # перенаправление происходит на созданную страницу
+    success_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -97,7 +95,7 @@ class ContactFormView(DataMixin, FormView):
 
 class Predict(DataMixin, View):
     model = ListСompanies
-    context_object_name = 'companies'  # В эту переменную помещаются данные из указанной модели
+    context_object_name = 'companies'
 
     def get_context_data(self, *, request, object_list=None, **kwargs):
         context = {}
@@ -106,11 +104,9 @@ class Predict(DataMixin, View):
         selected_company_ticker = request.session.get('selected_company_ticker')
         predict_daily = request.session.get('predict_daily')
 
-        # selected_time_frame = request.session.get('selected_time_frame')
         selected_trained_nn_path = request.session.get('selected_trained_nn_path')
         selected_trained_nn_time_step = request.session.get('selected_trained_nn_time_step')
 
-        # print(f'selected_trained_nn_path: {selected_trained_nn_path}')
         """Обращаемся к апи"""
         data_for_graphic = data_API(selected_company_ticker)
         """Формируем набор данных для нейронки"""
@@ -150,8 +146,6 @@ class ShowNetwork(DataMixin, DetailView):
     template_name = 'neuron/shownetwork.html'
     slug_url_kwarg = 'network_slug'
     context_object_name = 'network'
-
-    # allow_empty = False  # возврат ошибки 404 при несоответсвии идентификатора url и бд
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -275,37 +269,6 @@ class Training(DataMixin, View):
             """Формируем набор данных для нейронки"""
             date = list(reversed(data_for_graphic.keys()))
             value = list(reversed(data_for_graphic.values()))
-            # print(value)
-            # print(type(value))
-            # print(len(value))
-            # with open(r"dataset.txt", "w") as file:
-            #     for i in value:
-            #         file.write(i + ' ')
-            #
-            # print('записано')
-            # # os.sleep(5)
-            #
-            # with open("dataset.txt", "r") as f:
-            #     value2 = f.read()
-            #
-            # print(value2)
-            # print(type(value2))
-            # print(len(value2))
-
-            # a = value2.split()
-            #
-            # print(a)
-            # print(type(a))
-            # print(len(a))
-
-            # 139.0
-            #
-            # <
-            #
-            # class 'str'>
-            #
-            # 35180
-
             """Обучаем модель, возвращаем путь к файлу модели"""
             path, accuracy, loss = neural_network_training.training(value, date, form_data)
 
@@ -316,7 +279,6 @@ class Training(DataMixin, View):
             model.file_trained_nn = path
             model.save()
 
-            #####################
             request.session['accuracy'] = accuracy
             request.session['loss'] = loss
 

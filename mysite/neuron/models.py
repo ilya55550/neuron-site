@@ -29,7 +29,6 @@ class ArchitectureNeuralNetwork(models.Model):
 
 
 class TrainedNeuralNetworkUser(models.Model):
-    # creator = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True)
     creator = models.CharField(max_length=100, null=True)
     time_step = models.IntegerField(null=True)
     loss = models.CharField(max_length=100, choices=choices_loss)
@@ -39,9 +38,7 @@ class TrainedNeuralNetworkUser(models.Model):
     file_trained_nn = models.FileField(upload_to='save_model_nn/%Y/%m/%d/')
     time_create = models.DateTimeField(auto_now_add=True)
     neural_network_architecture = models.ForeignKey('ArchitectureNeuralNetwork', on_delete=models.CASCADE)
-    # company = models.CharField(max_length=100, null=True)
     company = models.ForeignKey('ListСompanies', on_delete=models.CASCADE, related_name='get_list_companies')
-
 
     def __str__(self):
         return str(self.pk)
@@ -62,9 +59,6 @@ class ListСompanies(models.Model):
     def __str__(self):
         return self.name
 
-    # def get_absolute_url(self):
-    #     return reverse('predict', kwargs={'company_id': self.pk})
-
     class Meta:
         verbose_name = 'Компания'
         verbose_name_plural = 'Компании'
@@ -73,8 +67,8 @@ class ListСompanies(models.Model):
 
 class TrainedNeuralNetwork(models.Model):
     file_trained_nn = models.FileField(upload_to='harvested_save_model_nn/')
-    # company = models.CharField(max_length=100, null=True)
-    company = models.ForeignKey('ListСompanies', on_delete=models.CASCADE, related_name='get_list_companies_for_default', null=True)
+    company = models.ForeignKey('ListСompanies', on_delete=models.CASCADE,
+                                related_name='get_list_companies_for_default', null=True)
     time_step = models.IntegerField(null=True)
     time_update = models.DateTimeField(null=True)
 

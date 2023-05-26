@@ -32,18 +32,6 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('username', 'password')
 
 
-# class RegisterUserForm(forms.ModelForm):
-#     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-#     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
-#     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-#     password2 = forms.CharField(label='Повтор пароля', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-#     researcher = forms.BooleanField(label="Исследователь", required=False)
-#
-#     class Meta:
-#         model = User
-#         fields = '__all__'
-
-
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
@@ -70,11 +58,7 @@ class ChoiceParamResearcher(forms.Form):
     company = forms.ModelChoiceField(label='Тикер компании', widget=forms.Select(attrs={"class": "select-company",
                                                                                         "onchange": "if (this.selectedIndex) send_company();"}),
                                      queryset=ListСompanies.objects.all())
-    # time_frame = forms.ChoiceField(label='Time_Frame',
-    #                                choices=(('Daily', 'Daily'),
-    #                                         ('Weekly', 'Weekly'),
-    #                                         ('Monthly', 'Monthly'),
-    #                                         ))
+
     trained_nn_id = forms.ModelChoiceField(label='Модель нейронной сети',
                                            widget=forms.Select(attrs={'class': 'form-input'}),
                                            queryset=TrainedNeuralNetworkUser.objects.all())

@@ -1,17 +1,7 @@
-import os
-
 import numpy as np
-import pandas as pd
-from datetime import datetime
-import matplotlib.pyplot as plt
-import tensorflow as tf
 from keras.models import Sequential, load_model
-from keras.layers import Dense, LSTM, Dropout, GRU
 from keras.layers import *
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error
-from sklearn.model_selection import train_test_split
-from keras.callbacks import EarlyStopping
 from random import randint
 from datetime import datetime
 from mysite.settings import BASE_DIR
@@ -28,12 +18,8 @@ def create_dataset(dataset, time_step=1):
 
 def training(dataset, date, form_data):
     date = np.array(date)
-    # dataset = np.array(dataset)
-    # print(dataset[:10])
 
     date = date.reshape(-1, 1)
-    # dataset = dataset.reshape(-1, 1)
-    # print(dataset[:10])
 
     scaler = MinMaxScaler(feature_range=(0, 1))
     dataset = scaler.fit_transform(np.array(dataset).reshape(-1, 1))
@@ -48,15 +34,6 @@ def training(dataset, date, form_data):
 
     X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
     X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
-
-    # print('X_train')
-    # print(X_train)
-    # print('y_train')
-    # print(y_train)
-    # print('X_test')
-    # print(X_test)
-    # print('ytest')
-    # print(ytest)
 
     if str(form_data['neural_network_architecture']) == 'LSTM':
         model = Sequential()
@@ -74,8 +51,6 @@ def training(dataset, date, form_data):
         model.add(Dense(units=1))
 
     model.compile(optimizer=form_data['optimizer'], loss=form_data['loss'], metrics=['accuracy'])
-    # model.compile(optimizer=form_data['optimizer'], loss=form_data['loss'],
-    #               metrics=[tf.keras.metrics.CategoricalAccuracy()])
 
     history = model.fit(X_train, y_train, validation_data=(X_test, ytest),
                         epochs=form_data['epochs'],
@@ -92,16 +67,6 @@ def training(dataset, date, form_data):
     path = f'save_model_nn/' + str(current_datetime.year) + '/' + str(current_datetime.month) + '/' + str(
         current_datetime.day) + '/' + generate_name()
     model.save(str(BASE_DIR) + '/media/' + path)  # <FieldFile: save_model_nn/2022/04/03/СNN_model_kyjBosa.h5>
-
-    # predict = model.predict(X_test)
-    # predict = scaler.inverse_transform(predict)
-    #
-    # diff = predict - test_data
-    #
-    # print("MSE:", np.mean(diff ** 2))
-    # print("MAE:", np.mean(abs(diff)))
-    # print("RMSE:", np.sqrt(np.mean(diff ** 2)))
-    # print(history.history.keys())
 
     acurracy_dict = {history.epoch[i] + 1: history.history['accuracy'][i] for i in range(len(history.epoch))}
     loss_dict = {history.epoch[i] + 1: history.history['loss'][i] for i in range(len(history.epoch))}
